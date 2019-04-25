@@ -32,16 +32,16 @@ class AddFolder extends React.Component{
    
     e.preventDefault()
     //console.log(this.state,'test state in submit handle')
-    fetch(`http://localhost:9090/folders`, {
+    fetch(`http://localhost:9090/api/folders/`, {
   method: 'POST',
   headers: {
     'content-type': 'application/json'
   },
   body:JSON.stringify(this.state)
 }).then(res=>{
-  if(!res.ok){
-    return res.json().then(error=>{throw new Error(error)})
-  }
+  // if(!res.ok){
+  //   return res.json().then(error=>{throw new Error(error)})
+  // }
   return res.json()
 }).then(
   (data)=>{
