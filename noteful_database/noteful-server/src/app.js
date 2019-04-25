@@ -5,7 +5,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const {NODE_ENV} = require('./config')
 const app = express()
-
+const folderRouter = require('./folders/folderRouter')
 const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
   : 'common';
@@ -25,8 +25,10 @@ app.use(function errorHandler(error, req, res, next) {
     res.status(500).json(response)
   })
 
-app.get('/',(req,res)=>{
-  res.send('Hello, world!')
+app.use('/api/folders',folderRouter)
+
+app.get('/folders',(req,res,next)=>{
+  res.send('All folders')
 })
 
 
