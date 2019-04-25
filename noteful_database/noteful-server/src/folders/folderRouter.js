@@ -24,7 +24,13 @@ folderRouter
 .post(jsonParser,(req,res,next)=>{
   const {folder_name } = req.body
   const newFolder = {folder_name}
-  console.log(newFolder,'test newfolder')
+  console.log(newFolder,'test folder')
+  for (const [key, value] of Object.entries(newFolder))
+      if (value == null)
+        return res.status(400).json({
+          error: { message: `Missing "${key}" in request body` }
+        })
+
   newFolder.folder_name = folder_name;
   
   FolderService.insertFolder(
