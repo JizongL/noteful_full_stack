@@ -90,5 +90,20 @@ describe.only(`Notes Endpoints`,()=>{
             .expect(postRes.body)
             )
     })
+    const requireFields = ['note_name','content','folder']
+    requireFields.forEach(field =>{
+      const newNote = {
+        note_name:'note 2',
+        content:'note 2 content',               
+        folder:1
+      }
+      it(`responds with 400 and an error message when then ${field} is missing`,()=>{
+        delete newNote[field]
+        return supertest(app)
+          .post('/api/notes')
+          .send(newNote)
+          .expect(400,{error:{message:`Missing "${field}" in request body`}})
+      })
+    })
   })
 })
