@@ -83,6 +83,12 @@ describe.only(`Notes Endpoints`,()=>{
             const actual = new Date(res.body.date_added).toLocaleString()
             expect(actual).to.eql(expected)
           })
+          .then(postRes=>
+             supertest(app)
+            .get(`/api/notes/${postRes.body.id}`)
+            .expect(200)
+            .expect(postRes.body)
+            )
     })
   })
 })
