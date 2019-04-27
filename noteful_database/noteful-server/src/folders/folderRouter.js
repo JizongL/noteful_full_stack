@@ -47,5 +47,35 @@ folderRouter
     .catch(next)
 
 })
+folderRouter
+  .route('/:folder_id')
+  .all((req,res,next)=>{
+    FolderService.getById(
+      req.app.get('db'),
+      req.params.folder_id
+    ).then(folder=>{
+      if(!folder){
+        return res.status(404).json({
+          error:{message:`Folder doesn't exist`}
+        })
+      }
+      res.folder=folder
+      next()
+    })
+    .catch(next)
+  })
 
+  .get((req,res,next)=>{
+    res.json(serializeFolder(res.folder))
+  })
+  .delete((req,res,next)=>{
+    FolderService.deleteFolder(
+      req.app.get('db'),req.params.folder_id
+    )
+    .then(numberRowsAffected=>{
+      res.status(204).end()
+    })
+    .catch(next)
+  })
+  
 module.exports = folderRouter

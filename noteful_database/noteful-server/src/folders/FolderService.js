@@ -22,7 +22,15 @@ const FolderService ={
       .where('id',id)
       .first()
   },
-
+  deleteFolder(knex,id){
+    return knex.from('noteful_folders')
+    .where({id}).delete()
+  },
+  updateFolder(knex,id,newUpdatedFolder){
+    return knex('noteful_folders')
+    .where({id})
+    .update(newUpdatedFolder)
+  }
 }
 
 module.exports = FolderService
