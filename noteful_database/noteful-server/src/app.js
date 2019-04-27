@@ -5,6 +5,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const {NODE_ENV} = require('./config')
 const app = express()
+const noteRouter = require('./notes/noteRouter')
 const folderRouter = require('./folders/folderRouter')
 const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
@@ -26,7 +27,7 @@ app.use(function errorHandler(error, req, res, next) {
   })
 
 app.use('/api/folders',folderRouter)
-
+app.use('/api/notes',noteRouter)
 app.get('/folders',(req,res,next)=>{
   res.send('All folders')
 })

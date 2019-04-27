@@ -30,9 +30,9 @@ folderRouter
         return res.status(400).json({
           error: { message: `Missing "${key}" in request body` }
         })
-
+  console.log(newFolder,'test newfolder')      
   newFolder.folder_name = folder_name;
-  
+  console.log(newFolder,'test newfolder2')  
   FolderService.insertFolder(
       req.app.get('db'),
       newFolder
