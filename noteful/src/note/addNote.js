@@ -32,7 +32,7 @@ class AddNote extends React.Component{
     e.preventDefault()
     console.log(JSON.stringify(this.state),'test this.state in request handle')
     if(this.state.folderId)
-    fetch(`http://localhost:9090/notes`, {
+    fetch(`http://localhost:9090/api/notes`, {
   method: 'POST',
   headers: {
     'content-type': 'application/json'
@@ -48,7 +48,7 @@ class AddNote extends React.Component{
   (data)=>{
     console.log('added test',data)
     this.context.addNote(data)
-    this.props.history.push(`/folder/${this.state.folderId}`)
+    this.props.history.push(`/api/folder/${this.state.folderId}`)
   })
   }
 

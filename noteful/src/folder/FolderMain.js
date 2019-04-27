@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 import NotefulContext from '../contextFolder/notefulContext'
 
 const noteRemoveRequest=(noteId,callback)=>{
-  fetch(`http://localhost:9090/notes/${noteId}`, {
+  fetch(`http://localhost:9090/api/notes/${noteId}`, {
   method: 'DELETE',
   headers: {
     'content-type': 'application/json'
@@ -30,7 +30,7 @@ render(){
   //console.log('testing props',this.props.match.params.folderId)
   //console.log(Data.notes,'test data note')
   const notesForFolder = this.context.notes.filter(note=>
-    note.folderId===this.props.match.params.folderId
+    Number(note.folder)===Number(this.props.match.params.folderId)
   )
   //console.log(notesForFolder,'test noteforfolder')
   return(
@@ -38,9 +38,9 @@ render(){
     {notesForFolder.map(note=>
       <li key={note.id}>
         <Link to={`/note/${note.id}`}>
-        <h6>{note.name}</h6>
+        <h6>{note.note_name}</h6>
         </Link>
-        <span>Modified {note.modified}</span>
+        <span>Modified {note.date_added}</span>
         <button
         onClick={()=>noteRemoveRequest(note.id,this.context.removeNote)}
         >Remove</button>

@@ -13,7 +13,7 @@ state={
 }
   static contextType = NotefulContext;
    noteRemoveRequest=(noteId,callback)=>{
-    fetch(`http://localhost:9090/notes/${noteId}`, {
+    fetch(`http://localhost:9090/api/notes/${noteId}`, {
     method: 'DELETE',
     headers: {
       'content-type': 'application/json'
@@ -36,18 +36,21 @@ state={
   
   render(){
     const noteForRender = this.context.notes.filter(note=>
-      note.id ===this.props.match.params.noteId)
-      console.log(this.context,'test note for render')
+      note.id ===Number(this.props.match.params.noteId))
+      console.log(this.context.notes,'test note id')
+      console.log(this.context,'test note for context')
+      console.log(typeof this.props.match.params.noteId,'test note for render')
       
       let noteId = noteForRender[0].id
+      console.log(noteForRender[0],'test modified')
     return(
       <div className='note'>
       <ul>
         <li key={noteId}>
         <Link to={`/note/${noteId}`}>
-        <h6>{noteForRender[0].name}</h6>
+        <h6>{noteForRender[0].note_name}</h6>
         </Link>
-        <span>Modified {noteForRender[0].modified}</span>
+        <span>Modified {noteForRender[0].date_added}</span>
       </li>
       </ul>
         {noteForRender[0].content}

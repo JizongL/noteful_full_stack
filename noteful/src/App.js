@@ -9,7 +9,7 @@ import Note from './note/Note'
 import FolderSidebar from './folder/FolderSidebar';
 import NotefulContext from './contextFolder/notefulContext'
 import AddNote from './note/addNote'
-import NotefulError from './errorBoundary/notefulError'
+
 
 class App extends Component {
   constructor(props){
@@ -26,7 +26,7 @@ class App extends Component {
   
   componentDidMount(){
     
-    fetch("http://localhost:9090/folders").then(
+    fetch("http://localhost:9090/api/folders").then(
      res=> {if(!res.ok){
        return res.json().then(error=>{throw new Error(error)})
      }
@@ -34,13 +34,14 @@ class App extends Component {
     }
      
     ).then(folders=>{
+      console.log(folders,'test folders')
       this.setState({folders:folders})
     }).catch(error=>{this.setState({
       error:error
     })
 
     });
-    fetch("http://localhost:9090/notes").then(
+    fetch("http://localhost:9090/api/notes").then(
      res=> {if(!res.ok){
        return res.json()
         .then(error=>{throw new Error(error)})
@@ -86,6 +87,7 @@ class App extends Component {
       addFolder:this.addFolderHandle,
       addNote:this.addNoteHandle
     }
+    console.log(this.state,'test state')
     return (
       <NotefulContext.Provider value={value}>
 

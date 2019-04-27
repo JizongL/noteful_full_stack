@@ -11,7 +11,7 @@ class MainSidebar extends React.Component{
       {this.context.folders.map(folder=>
       <li key={folder.id}>
       <Link to={`/folder/${folder.id}`}>
-      {folder.name}
+      {folder.folder_name}
       </Link>
       </li>
     )}
