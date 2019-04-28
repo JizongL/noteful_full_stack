@@ -122,7 +122,7 @@ describe.only(`Notes Endpoints`,()=>{
       })    
   })
   describe('DELETE /api/notes/:note_id',()=>{
-    context.only('Given there are notes in the database',()=>{
+    context('Given there are notes in the database',()=>{
       const testNote = makeNotesArray()
       const testFolders = makeFoldersArray()
       beforeEach('insert folders and notes',()=>{
@@ -145,6 +145,129 @@ describe.only(`Notes Endpoints`,()=>{
               supertest(app)
                 .get('/api/notes')
                 .expect(expectedNotes))
+      })
+    })
+    context('Given there are no notes',()=>{
+      it('responds with 404',()=>{
+        const noteId=12345
+        return supertest(app)
+        .delete(`/api/notes/${noteId}`)
+        .expect(404,{error:{message:`Note doesn't exist`}})
+      })
+    })
+  })
+
+  describe('PATH /api/notes/:note_id',()=>{
+    const testFolders=makeFoldersArray()
+    const testNotes = makeNotesArray()
+    context('Given no notes',()=>{
+      it('responds with 404',()=>{
+        const noteId = 12345
+        return supertest(app)
+          .patch(`/api/notes/${noteId}`)
+          .expect(404,{error:{message:`Note doesn't exist`}})
+      })
+    })
+    context('Given there are notes in the database',()=>{
+      beforeEach('insert folders and notes',()=>{
+        return db
+        .into('noteful_folders')
+        .insert(testFolders)
+        .then(()=>{
+          return db
+          .into('noteful_notes')
+          .insert(testNotes)
+        })
+      })
+      it('respond with 204 and update the note',()=>{
+        const idToUpdate = 2
+        const updatedNote = {          
+            note_name:'note updated',
+            content:'note 2 content updated',               
+            folder:1          
+        }
+        const expectedNote = {
+          ...testNotes[idToUpdate-1],
+          ...updatedNote
+        }
+        return supertest(app)
+          .patch(`/api/notes/${idToUpdate}`)
+          .send(updatedNote)
+          .expect(204)
+          .then(res=>{
+            supertest(app)
+              .get(`/api/notes/${idToUpdate}`)
+              .expect(expectedNote)
+          })
+      })
+      it('responds with 400 when no required fields supplied',()=>{
+        const idToUpdate = 2
+        
+        return supertest(app)
+          .patch(`/api/notes/${idToUpdate}`)
+          .send({irrelevantField:'foo'})
+          // .send(updatedNote)
+          .expect(400,{
+            error:{
+              message:`Request body must contain either 'note_name', 'content' or 'folder'`
+            }
+          })
+      })
+      it(`responds with 204 when updating only a subset of fields`,()=>{
+        const idToUpdate = 2
+        const updateNote = {
+          note_name:'update notename'
+        }
+        const expectedNote={
+          ...testNotes[idToUpdate-1],
+          ...updateNote
+        }
+        return supertest(app)
+          .patch(`/api/notes/${idToUpdate}`)
+          .send({
+            ...updateNote,
+            // irevelent field will not be updated
+            fieldToIgnore:'should not be in GET response'
+          })
+          .expect(204)
+          .then(res=>{
+            supertest(app)
+              .get(`/api/notes/${idToUpdate}`)
+              .expect(expectedNote)
+          })
+      })
+    })
+  })
+  describe(`GET /api/notes/:note_id`,()=>{
+    context('Given there are notes in the database',()=>{
+      const testFolders = makeFoldersArray()
+      const testNotes = makeNotesArray()
+      beforeEach(`insert folders and notes`,()=>{
+        return db
+          .into('noteful_folders')
+          .insert(testFolders)
+          .then(()=>{
+            return db
+            .into('noteful_notes')
+            .insert(testNotes)
+          })
+      })
+
+      it(`GET /api/notes/:note_id responds with 200 and the specified note`,()=>{
+        const noteId = 2
+        const expectedNote = testNotes[noteId-1]
+        return supertest(app)
+          .get(`/api/notes/${noteId}`)
+          .expect(200,expectedNote)          
+      })
+      
+      context('Given no notes',()=>{
+        it(`responds with 404`,()=>{
+          const noteId = 12345
+          return supertest(app)
+          .get(`/api/notes/${noteId}`)
+          .expect(404, { error: { message: `Note doesn't exist`}})
+        })
       })
     })
   })
