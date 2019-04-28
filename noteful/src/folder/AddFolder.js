@@ -29,7 +29,7 @@ class AddFolder extends React.Component{
 
 
   formSubmithandle=(e)=>{
-   
+    console.log(this.state,'test this.state folder')
     e.preventDefault()
     //console.log(this.state,'test state in submit handle')
     fetch(`http://localhost:9090/api/folders/`, {
@@ -37,7 +37,7 @@ class AddFolder extends React.Component{
   headers: {
     'content-type': 'application/json'
   },
-  body:JSON.stringify(this.state)
+  body:JSON.stringify({folder_name:this.state.name})
 }).then(res=>{
   // if(!res.ok){
   //   return res.json().then(error=>{throw new Error(error)})
