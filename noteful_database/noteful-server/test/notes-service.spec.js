@@ -105,5 +105,47 @@ describe.only(`Notes Endpoints`,()=>{
           .expect(400,{error:{message:`Missing "${field}" in request body`}})
       })
     })
+    const maliciousNote = {      
+      note_name: 'Naughty naughty very naughty <script>alert("xss");</script>',
+      folder:1,
+      content: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`
+  }
+  it(`responds with 201 and posted malicious content`,()=>{
+    return supertest(app)
+      .post('/api/notes')
+      .send(maliciousNote)
+      .expect(201)
+      .expect(res=>{
+        expect(res.body.note_name).to.eql('Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;')
+        expect(res.body.content).to.eql(`Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`)
+         })
+      })    
+  })
+  describe('DELETE /api/notes/:note_id',()=>{
+    context.only('Given there are notes in the database',()=>{
+      const testNote = makeNotesArray()
+      const testFolders = makeFoldersArray()
+      beforeEach('insert folders and notes',()=>{
+        return db
+        .into('noteful_folders')
+        .insert(testFolders)
+        .then(()=>{
+          return db
+          .into('noteful_notes')
+          .insert(testNote)
+        })
+      })
+      it('responds with 204 and removes the note',()=>{
+        const idToRemove = 2
+        const expectedNotes = testNote.filter(note=>note.id!==idToRemove)
+        return supertest(app)
+          .delete(`/api/notes/${idToRemove}`)
+          .expect(204)
+          .then(res=>
+              supertest(app)
+                .get('/api/notes')
+                .expect(expectedNotes))
+      })
+    })
   })
 })

@@ -70,4 +70,16 @@ noteRouter
     res.json(serializeNote(res.note))
   })
 
+
+  .delete((req,res,next)=>{
+    NoteService.deleteNote(
+      req.app.get('db'),
+      req.params.note_id
+    )
+    .then(numRowsAffected=>{
+      res.status(204).end()
+    })
+    .catch(next)
+  })
+
 module.exports = noteRouter

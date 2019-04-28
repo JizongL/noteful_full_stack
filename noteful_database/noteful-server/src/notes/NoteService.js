@@ -14,6 +14,17 @@ const NoteService ={
     })
 
   },
+  deleteNote(knex,id){
+    return knex.from('noteful_notes')
+    .where({id}).delete()
+  }
+  ,
+  updateNote(knex,id,updateNoteField){
+    return knex('noteful_notes')
+    .where({id})
+    .update(updateNoteField)
+  },
+  
   getById(knex,id){
     return knex
       .select('*')
