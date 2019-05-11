@@ -7,7 +7,7 @@ const NoteService = require('./NoteService')
 
 
 const serializeNote = note =>({
-// change to note
+
   id:note.id,
   note_name:xss(note.note_name),
   content:xss(note.content),
@@ -85,7 +85,7 @@ noteRouter
     const {note_name,content,folder} = req.body
     const noteToUpdate = {note_name,content,folder}
     const numberOfValue = Object.values(noteToUpdate).filter(Boolean).length
-    console.log(numberOfValue,'test number of value')
+    
     if(numberOfValue===0){
       return res.status(400).json(
         {
