@@ -9,14 +9,10 @@ const noteRemoveRequest=(noteId,callback)=>{
   headers: {
     'content-type': 'application/json'
   },
-}).then(res=>{
-  if(!res.ok){
-   return res.json().then(error=>{
-      throw new Error(error)
-    })
-  }return res.json()
-  
-}).then(()=>{
+})
+// no need to do return res.json() here, because there is nothing to 
+// return after deleting
+.then(()=>{
   console.log('test delete handle noteId',noteId)
   callback(noteId)
 })

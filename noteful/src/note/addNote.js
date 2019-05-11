@@ -14,24 +14,24 @@ class AddNote extends React.Component{
     super(props)
     let date = new Date().toISOString()
     this.state={
-      name:'',
+      note_name:'',
       content:'',
-      folderId:'',
-      modified:date
+      folder:'',
+      
     }
   }
   
   
 
 
-  newDate =()=>{
-    let date = new Date()
-    this.setState({modified:date.toISOString()})
-  }
+  // newDate =()=>{
+  //   let date = new Date()
+  //   this.setState({modified:date.toISOString()})
+  // }
   newNoteRequest=(e)=>{
     e.preventDefault()
     console.log(JSON.stringify(this.state),'test this.state in request handle')
-    if(this.state.folderId)
+    if(this.state.folder)
     fetch(`http://localhost:9090/api/notes`, {
   method: 'POST',
   headers: {
@@ -40,7 +40,8 @@ class AddNote extends React.Component{
   body:JSON.stringify(this.state)
 }).then(res=>{
   if(!res.ok){
-    return res.json().then(error=>{throw new Error(error)})
+    //return res.json().then(error=>{throw new Error(error)})
+    throw new Error("error")
   }
   
   return res.json()
@@ -48,12 +49,12 @@ class AddNote extends React.Component{
   (data)=>{
     console.log('added test',data)
     this.context.addNote(data)
-    this.props.history.push(`/api/folder/${this.state.folderId}`)
+    this.props.history.push(`/folder/${this.state.folder}`)
   })
   }
 
   inputNameHanle=(e)=>{
-    this.setState({name:e.target.value})
+    this.setState({note_name:e.target.value})
   }
 
   inputContentHandle=(e)=>{
@@ -63,9 +64,9 @@ class AddNote extends React.Component{
 
   inputFolderHandle=(e)=>{
     let newFolder = e.target.value
-    const foundFolder = this.context.folders.filter(folder=>folder.name===newFolder)
+    const foundFolder = this.context.folders.filter(folder=>folder.folder_name===newFolder)
     console.log(foundFolder[0].id,'test found folder')
-    this.setState({folderId:foundFolder[0].id})
+    this.setState({folder:foundFolder[0].id})
   }
 
   render(){
@@ -74,7 +75,7 @@ class AddNote extends React.Component{
     
     console.log(JSON.stringify(this.state),'test state json')
     const folderOption = this.context.folders.map(folder=>
-       <option id ={folder.id} key={folder.id}>{folder.name}</option>
+       <option id ={folder.id} key={folder.id}>{folder.folder_name}</option>
      )
       
 
